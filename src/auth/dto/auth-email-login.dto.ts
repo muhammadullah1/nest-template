@@ -1,11 +1,12 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class AuthEmailLoginDto {
-  @Transform(({ value }) => value.toLowerCase().trim())
+  @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @IsOptional()
-  username: string;
+  email: string;
 
   @IsNotEmpty()
   password: string;

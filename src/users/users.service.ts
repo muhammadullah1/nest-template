@@ -10,7 +10,6 @@ import { UserRepository } from './infrastructure/persistence/user.repository';
 import { User } from './domain/user';
 import bcrypt from 'bcryptjs';
 import { AuthProvidersEnum } from '../auth/auth-providers.enum';
-import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { IPaginationOptions } from '../utils/types/pagination-options';
@@ -20,7 +19,6 @@ import { DeepPartial } from '../utils/types/deep-partial.type';
 export class UsersService {
   constructor(
     private readonly usersRepository: UserRepository,
-    private readonly filesService: FilesService,
   ) {}
 
   async create(createProfileDto: CreateUserDto): Promise<User> {
@@ -48,20 +46,21 @@ export class UsersService {
       }
     }
 
-    if (clonedPayload.photo?.id) {
-      const fileObject = await this.filesService.findById(
-        clonedPayload.photo.id,
-      );
-      if (!fileObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            photo: 'imageNotExists',
-          },
-        });
-      }
-      clonedPayload.photo = fileObject;
-    }
+
+    // if (clonedPayload.photo?.path) {
+    //   const filePath = clonedPayload.photo.path;
+    //   const fileExists = await this.filesService.exists(filePath); // Assuming exists method checks if the file exists at the given path
+    //   if (!fileExists) {
+    //     throw new UnprocessableEntityException({
+    //       status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //       errors: {
+    //         photo: 'imageNotExists',
+    //       },
+    //     });
+    //   }
+    //   clonedPayload.photo = filePath;
+    // }
+    
 
     if (clonedPayload.role?.id) {
       const roleObject = Object.values(RoleEnum)
@@ -158,21 +157,6 @@ export class UsersService {
           },
         });
       }
-    }
-
-    if (clonedPayload.photo?.id) {
-      const fileObject = await this.filesService.findById(
-        clonedPayload.photo.id,
-      );
-      if (!fileObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            photo: 'imageNotExists',
-          },
-        });
-      }
-      clonedPayload.photo = fileObject;
     }
 
     if (clonedPayload.role?.id) {

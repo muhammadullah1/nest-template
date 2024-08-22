@@ -91,7 +91,6 @@ export class AuthService {
       user,
     };
   }
-
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];
